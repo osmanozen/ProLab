@@ -1,0 +1,1103 @@
+#include <graphics.h>
+#include <math.h>
+#include <iostream>
+ 
+using namespace std;
+
+main(){
+    int choise;
+    int giris=0,cikis=0;
+    int giriscikis[5][4]={0};
+    string tercih,tercih2;
+    
+    int yollar[9];
+    int kavsak[5][4]={0};
+    int kavsaktoplam[5]={0};
+    int unknown=1;
+
+	initwindow(675,350);
+	readimagefile("haritaMini1.jpg",25,25,325,325);    
+	readimagefile("haritaMini2.jpg",350,25,650,325);    
+    
+    harita_sec:
+    cout<<"Harita seciniz(1-2):";
+	cin>>choise;
+
+	closegraph();
+	
+    if(choise==1){
+		initwindow(650,650);
+		readimagefile("harita1.jpg",25,25,625,625);
+		
+		cout<<"********HARITAYA GIRIS-CIKIS YOLLARI********\n";
+
+		x_sec:
+		cout<<"x caddesi giris caddesi mi cikis caddesi mi?(giris-cikis):";
+		cin>>tercih;
+		
+		if(tercih=="giris"){
+            cout<<"x caddesi giris caddesi olmustur.\n";
+            giriscikis[0][1]=1;
+            giriscikis[4][0]=1;
+            giris++;
+        }else if (tercih=="cikis"){
+            cout<<"x caddesi cikis caddesi olmustur.\n";
+            giriscikis[0][1]=-1;
+            giriscikis[4][0]=-1;
+            cikis++;
+        }else{
+            cout<<"tanimsiz deger girdiniz.\n";
+            goto x_sec;
+        }
+        
+        y_sec:
+        cout<<"y caddesi giris caddesi mi cikis caddesi mi?(giris-cikis)";
+		cin>>tercih;
+		
+		if(tercih=="giris"){
+            cout<<"y caddesi giris caddesi olmustur.\n";
+            giriscikis[1][1]=1;
+            giriscikis[4][1]=1;
+            giris++;
+        }else if (tercih=="cikis"){
+            cout<<"y caddesi cikis caddesi olmustur.\n";
+            giriscikis[1][1]=-1;
+            giriscikis[4][1]=-1;
+            cikis++;
+        }else{
+            cout<<"tanimsiz deger girdiniz.\n";
+            goto y_sec;
+        }
+        
+        z_sec:
+        cout<<"z caddesi giris caddesi mi cikis caddesi mi?(giris-cikis)";
+		cin>>tercih;
+		
+		if(tercih=="giris"){
+            if(giris>1){
+                cout<<"Haritaya 2'den fazla giris yapilamamaktadir.\n";
+                goto z_sec;
+            }else{
+            cout<<"z caddesi giris caddesi olmustur.\n";
+            giriscikis[2][2]=1;
+            giriscikis[4][2]=1;
+            giris++;}
+         }else if (tercih=="cikis"){
+            if(cikis>1){
+                cout<<"Haritaya 2'den fazla cikis yapilamamaktadir.\n";
+                goto z_sec;
+            }else{
+            cout<<"z caddesi cikis caddesi olmustur.\n";
+            giriscikis[2][2]=-1;
+            giriscikis[4][2]=-1;
+            cikis++;}
+        }else{
+            cout<<"tanimsiz deger girdiniz.\n";
+            goto z_sec;
+        }
+        
+        t_sec:
+        cout<<"t caddesi giris caddesi mi cikis caddesi mi?(giris-cikis)";
+		cin>>tercih;
+		
+		if(tercih=="giris"){
+            if(giris>1){
+                cout<<"Haritaya 2'den fazla giris yapilamamaktadir.\n";
+                goto t_sec;
+            }else{
+            cout<<"t caddesi giris caddesi olmustur.\n";
+            giriscikis[3][0]=1;
+            giriscikis[4][3]=1;
+            }
+        }else if (tercih=="cikis"){
+            if(cikis>1){
+                cout<<"Haritaya 2'den fazla cikis yapilamamaktadir.\n";
+                goto t_sec;}
+            else{  
+            cout<<"t caddesi cikis caddesi olmustur.\n";
+            giriscikis[3][0]=-1;
+            giriscikis[4][3]=-1;
+            }
+        }else{
+            cout<<"tanimsiz deger girdiniz.\n";
+            goto t_sec;
+        }
+        
+        cout<<"Harita giris, cikisleri belirlendi.\n\n";
+        
+        for( int j = 0 ; j <= 15 ; j++ ){
+
+             //X
+             line(325,105,325,125);
+             if(giriscikis[0][1]==1){
+                line(325,126,320,121); //-Y
+                line(325,126,330,121); //-Y
+             }else{
+                line(325,104,320,109); //Y
+                line(325,104,330,109); //Y
+             }
+             
+             
+             //Y
+             line(525,325,545,325);
+             if(giriscikis[1][1]==1){
+                line(524,325,529,320); //-X
+                line(524,325,529,330); //-X
+             }else{
+                line(546,325,541,320); //X
+                line(546,325,541,330); //X
+             }
+             
+             //Z
+             line(325,525,325,545);
+             if(giriscikis[2][2]==1){
+                line(325,524,320,529); //Y
+                line(325,524,330,529); //Y
+             }else{
+                line(325,546,320,541); //-Y
+                line(325,546,330,541); //-Y
+             }
+             
+             //T
+             line(105,325,125,325);
+             if(giriscikis[3][0]==1){
+                line(126,325,121,320); //X
+                line(126,325,121,330); //X
+             }else{
+                line(104,325,109,320); //-X
+                line(104,325,109,330); //-X
+             }
+
+             setcolor(j);
+             delay(100);
+             //if ( j == 15 ) j = 2;
+        }
+        
+        cout<<"********CADDELERIN YONUNU BELIRLEME*********\n";
+        		
+        a_sec:
+		cout<<"a caddesi baslangic noktasi?(t-x):";
+		cin>>tercih;
+		cout<<"a caddesinin yonu ?(t-x):";
+		cin>>tercih2;
+		
+		if(tercih=="t" && tercih2=="x"){
+            cout<<"a caddesinin yonu belirlenmistir.\n";
+            giriscikis[0][0]=1;
+            giriscikis[3][1]=-1;
+        }else if (tercih=="x" && tercih2=="t"){
+            cout<<"a caddesinin yonu belirlenmistir.\n";
+            giriscikis[0][0]=-1;
+            giriscikis[3][1]=1;
+        }else if ((tercih=="x" && tercih2=="x") || (tercih=="t" && tercih2=="t")){
+            cout<<"Baslangic noktasi ile yon ayni olamaz.\n";
+            goto a_sec;
+        }else{
+            cout<<"tanimsiz deger girdiniz.\n";
+            goto a_sec;
+        }
+        
+        b_sec:
+		cout<<"b caddesi baslangic noktasi?(x-y):";
+		cin>>tercih;
+		cout<<"b caddesinin yonu ?(x-y):";
+		cin>>tercih2;
+		
+		if(tercih=="y" && tercih2=="x"){
+            if(giriscikis[0][0]==1 && giriscikis[0][1]==1){
+                cout<<"Kavsak noktasina cakisma olmaktadir.\n";
+                goto b_sec;
+            }else{
+                cout<<"b caddesinin yonu belirlenmistir.\n";
+                giriscikis[0][2]=1;
+                giriscikis[1][0]=-1;
+            }
+        }else if (tercih=="x" && tercih2=="y"){
+            if(giriscikis[0][0]==-1 && giriscikis[0][1]==-1){
+                cout<<"Kavsak noktasina cakisma olmaktadir.\n";
+                goto b_sec;
+            }else{
+                cout<<"b caddesinin yonu belirlenmistir.\n";
+                giriscikis[0][2]=-1;
+                giriscikis[1][0]=1;
+            }  
+        }else if ((tercih=="x" && tercih2=="x") || (tercih=="y" && tercih2=="y")){
+            cout<<"Baslangic noktasi ile yon ayni olamaz.\n";
+            goto b_sec;
+        }else{
+            cout<<"tanimsiz deger girdiniz.\n";
+            goto b_sec;
+        }
+        
+        d_sec:
+		cout<<"d caddesi baslangic noktasi?(y-z):";
+		cin>>tercih;
+		cout<<"d caddesinin yonu ?(y-z):";
+		cin>>tercih2;
+		
+		if(tercih=="z" && tercih2=="y"){
+            if(giriscikis[1][0]==1 && giriscikis[1][1]==1){
+                cout<<"Kavsak noktasina cakisma olmaktadir.\n";
+                goto d_sec;
+            }else{
+                cout<<"d caddesinin yonu belirlenmistir.\n";
+                giriscikis[1][2]=1;
+                giriscikis[2][1]=-1;
+            }
+        }else if (tercih=="y" && tercih2=="z"){
+            if(giriscikis[1][0]==-1 && giriscikis[1][1]==-1){
+                cout<<"Kavsak noktasina cakisma olmaktadir.\n";
+                goto d_sec;
+            }else{
+                cout<<"d caddesinin yonu belirlenmistir.\n";
+                giriscikis[1][2]=-1;
+                giriscikis[2][1]=1;
+            }  
+        }else if ((tercih=="y" && tercih2=="y") || (tercih=="z" && tercih2=="z")){
+            cout<<"Baslangic noktasi ile yon ayni olamaz.\n";
+            goto d_sec;
+        }else{
+            cout<<"tanimsiz deger girdiniz.\n";
+            goto d_sec;
+        }
+        
+        c_sec:
+		cout<<"c caddesi baslangic noktasi?(t-z):";
+		cin>>tercih;
+		cout<<"c caddesinin yonu ?(t-z):";
+		cin>>tercih2;
+		
+		if(tercih=="z" && tercih2=="t"){
+            if(giriscikis[2][1]==-1 && giriscikis[2][2]==-1){
+                cout<<"Kavsak noktasina cakisma olmaktadir.\n";
+                goto c_sec;
+            }else{
+                cout<<"c caddesinin yonu belirlenmistir.\n";
+                giriscikis[2][0]=-1;
+                giriscikis[3][2]=1;
+            }
+        }else if (tercih=="t" && tercih2=="z"){
+            if(giriscikis[2][1]==1 && giriscikis[2][2]==1){
+                cout<<"Kavsak noktasina cakisma olmaktadir.\n";
+                goto c_sec;
+            }else{
+                cout<<"c caddesinin yonu belirlenmistir.\n";
+                giriscikis[2][0]=1;
+                giriscikis[3][2]=-1;
+            }  
+        }else if ((tercih=="t" && tercih2=="t") || (tercih=="z" && tercih2=="z")){
+            cout<<"Baslangic noktasi ile yon ayni olamaz.\n";
+            goto c_sec;
+        }else{
+            cout<<"tanimsiz deger girdiniz.\n";
+            goto c_sec;
+        }
+        
+        
+        cout<<"Haritadaki caddelerin yonleri belirlendi.\n\n";
+        
+        for( int j = 0 ; j <= 15 ; j++ ){
+
+             //A
+             line(202,233,224,211);
+             if(giriscikis[0][0]==1){
+                line(224,211,216,211); //UST
+                line(224,211,224,219); //UST
+             }else{
+                line(202,233,202,225); //ALT
+                line(202,233,210,233); //ALT
+             }
+             
+             
+             //B
+             line(429,210,451,232);
+             if(giriscikis[0][2]==1){
+                line(429,210,429,218); //UST
+                line(429,210,438,210); //UST
+             }else{
+                line(451,232,443,232); //ALT
+                line(451,232,451,224); //ALT
+             }
+             
+             //C
+             line(202,417,224,439);
+             if(giriscikis[3][2]==1){
+                line(202,417,202,425); //UST
+                line(202,417,210,417); //UST
+             }else{
+                line(224,439,216,439); //ALT
+                line(224,439,224,431); //ALT
+             }
+             
+             //D
+             line(429,440,451,418);
+             if(giriscikis[1][2]==1){
+                line(451,418,443,418); //UST
+                line(451,418,451,426); //UST
+             }else{
+                line(429,440,429,432); //ALT
+                line(429,440,437,440); //ALT
+             }
+
+             setcolor(j);
+             delay(100);
+             //if ( j == 15 ) j = 2;
+        }
+        
+        cout<<"x caddesinden gecen ortalama arac sayisi(bilinmiyorsa -1):";
+        cin>>yollar[0];
+        if(yollar[0]!=-1){
+            kavsak[0][1]=giriscikis[0][1]*yollar[0];
+            kavsak[4][0]=giriscikis[4][0]*yollar[0];
+            kavsaktoplam[0]+=giriscikis[0][1]*yollar[0];
+            kavsaktoplam[4]+=giriscikis[4][0]*yollar[0];
+        }else{
+            kavsak[0][1]=giriscikis[0][1]*(1000-unknown);
+            kavsak[4][0]=giriscikis[4][0]*(1000-unknown);
+            unknown++;
+        }
+
+        cout<<"y caddesinden gecen ortalama arac sayisi(bilinmiyorsa -1):";
+        cin>>yollar[1];
+        if(yollar[1]!=-1){
+            kavsak[1][1]=giriscikis[1][1]*yollar[1];
+            kavsak[4][1]=giriscikis[4][1]*yollar[1];
+            kavsaktoplam[1]+=giriscikis[1][1]*yollar[1];
+            kavsaktoplam[4]+=giriscikis[4][1]*yollar[1];
+        }else{
+            kavsak[1][1]=giriscikis[1][1]*(1000-unknown);
+            kavsak[4][1]=giriscikis[4][1]*(1000-unknown);
+            unknown++;
+        }
+
+        cout<<"z caddesinden gecen ortalama arac sayisi(bilinmiyorsa -1):";
+        cin>>yollar[2];
+        if(yollar[2]!=-1){
+            kavsak[2][2]=giriscikis[2][2]*yollar[2];
+            kavsak[4][2]=giriscikis[4][2]*yollar[2];
+            kavsaktoplam[2]+=giriscikis[2][2]*yollar[2];
+            kavsaktoplam[4]+=giriscikis[4][2]*yollar[2];
+        }else{
+            kavsak[2][2]=giriscikis[2][2]*(1000-unknown);
+            kavsak[4][2]=giriscikis[4][2]*(1000-unknown);
+            unknown++;
+        }
+
+        cout<<"t caddesinden gecen ortalama arac sayisi(bilinmiyorsa -1):";
+        cin>>yollar[3];
+        if(yollar[3]!=-1){
+            kavsak[3][0]=giriscikis[3][0]*yollar[3];
+            kavsak[4][3]=giriscikis[4][3]*yollar[3];
+            kavsaktoplam[3]+=giriscikis[3][0]*yollar[3];
+            kavsaktoplam[4]+=giriscikis[4][3]*yollar[3];
+        }else{
+            kavsak[3][0]=giriscikis[3][0]*(1000-unknown);
+            kavsak[4][3]=giriscikis[4][3]*(1000-unknown);
+            unknown++;
+        }
+
+        cout<<"a caddesinden gecen ortalama arac sayisi(bilinmiyorsa -1):";
+        cin>>yollar[4];
+        if(yollar[4]!=-1){
+            kavsak[0][0]=giriscikis[0][0]*yollar[4];
+            kavsak[3][1]=giriscikis[3][1]*yollar[4];
+            kavsaktoplam[0]+=giriscikis[0][0]*yollar[4];
+            kavsaktoplam[3]+=giriscikis[3][1]*yollar[4];
+        }else{
+            kavsak[0][0]=giriscikis[0][0]*(1000-unknown);
+            kavsak[3][1]=giriscikis[3][1]*(1000-unknown);
+            unknown++;
+        }
+
+        cout<<"b caddesinden gecen ortalama arac sayisi(bilinmiyorsa -1):";
+        cin>>yollar[5];
+        if(yollar[5]!=-1){
+            kavsak[0][2]=giriscikis[0][2]*yollar[5];
+            kavsak[1][0]=giriscikis[1][0]*yollar[5];
+            kavsaktoplam[0]+=giriscikis[0][2]*yollar[5];
+            kavsaktoplam[1]+=giriscikis[1][0]*yollar[5];
+        }else{
+            kavsak[0][2]=giriscikis[0][2]*(1000-unknown);
+            kavsak[1][0]=giriscikis[1][0]*(1000-unknown);
+            unknown++;
+        }
+
+        cout<<"d caddesinden gecen ortalama arac sayisi(bilinmiyorsa -1):";
+        cin>>yollar[6];
+        if(yollar[6]!=-1){
+            kavsak[1][2]=giriscikis[1][2]*yollar[6];
+            kavsak[2][1]=giriscikis[2][1]*yollar[6];
+            kavsaktoplam[1]+=giriscikis[1][2]*yollar[6];
+            kavsaktoplam[2]+=giriscikis[2][1]*yollar[6];
+        }else{
+            kavsak[1][2]=giriscikis[1][2]*(1000-unknown);
+            kavsak[2][1]=giriscikis[2][1]*(1000-unknown);
+            unknown++;
+        }
+
+        cout<<"c caddesinden gecen ortalama arac sayisi(bilinmiyorsa -1):";
+        cin>>yollar[7];
+        if(yollar[7]!=-1){
+            kavsak[2][0]=giriscikis[2][0]*yollar[7];
+            kavsak[3][2]=giriscikis[3][2]*yollar[7];
+            kavsaktoplam[2]+=giriscikis[2][0]*yollar[7];
+            kavsaktoplam[3]+=giriscikis[3][2]*yollar[7];
+        }else{
+            kavsak[2][0]=giriscikis[2][0]*(1000-unknown);
+            kavsak[3][2]=giriscikis[3][2]*(1000-unknown);
+            unknown++;
+        }
+
+        double matris[5][unknown];
+
+        for(int i=0;i<5;i++){
+            for(int j=0;j<unknown;j++){
+                matris[i][j]=0;
+            }
+        }
+
+        for(int k=0;k<unknown;k++){
+            for(int i=0;i<5;i++){
+                for(int j=0;j<4;j++){
+                    if(kavsak[i][j]==-(999-k)){
+                        matris[i][k]=-1;
+                    }else if(kavsak[i][j]==(999-k)){
+                        matris[i][k]=1;
+                    }
+                }
+            }
+        }
+        
+        for(int i=0;i<5;i++){
+            matris[i][unknown-1]=-1*kavsaktoplam[i];
+        }
+        
+        cout<<"\nGauss Jordan yontemini girmeden once olusan matris:\n\n";
+        for(int i=0;i<5;i++){
+            for(int j=0;j<unknown;j++){
+                printf("%.1lf\t",matris[i][j]);
+            } printf("\n");
+        }            
+        
+        double x[10];
+
+        int i,j,k;
+        for(i=0;i<4;i++){
+            for(k=i+1;k<4;k++){
+                if(fabs(matris[i][i])<fabs(matris[k][i])){
+                    for(j=0;j<unknown;j++){
+                        double temp;
+                        temp=matris[i][j];
+                        matris[i][j]=matris[k][j];
+                        matris[k][j]=temp;
+                    }
+                }
+            }
+
+            for(k=i+1;k<5;k++){
+                double temp2=matris[k][i]/ matris[i][i];
+                for(j=0;j<unknown;j++){
+                    matris[k][j]=matris[k][j]-temp2*matris[i][j];
+                }
+            }
+
+        }
+
+        for(i=4;i>=0;i--){
+            x[i]=matris[i][unknown-1];
+            for(j=i+1;j<unknown-1;j++){
+                x[i]=x[i]-matris[i][j]*x[j];
+            }
+            x[i]=x[i]/matris[i][i];
+        }
+
+        cout<<"\nBilinmeyen yollarin sonuclari:\n\n";
+        for(int i=0;i<unknown-1;i++){
+            printf("%d. Bilinmeyen Yol=\t%.1lf\n",i+1,x[i]);
+        }
+
+     
+        exit_sec:
+		cout<<"Hesaplanma tamamlanmistir, cikis yapmak icin cikis yaziniz.";
+		cin>>tercih;
+		
+		if(tercih=="cikis"){
+            cout<<"Cikis yapiliyor...";
+            delay(500);
+        }else{
+            cout<<"tanimsiz deger girdiniz.\n";
+            goto exit_sec;
+        }
+
+    }else if(choise==2){
+		initwindow(650,650);
+		readimagefile("harita2.jpg",25,25,625,625);
+		
+		cout<<"********HARITAYA GIRIS-CIKIS YOLLARI********\n";
+
+		x2_sec:
+		cout<<"x caddesi giris caddesi mi cikis caddesi mi?(giris-cikis):";
+		cin>>tercih;
+		
+		if(tercih=="giris"){
+            cout<<"x caddesi giris caddesi olmustur.\n";
+            giriscikis[0][1]=1;
+            giriscikis[4][0]=1;
+            giris++;
+        }else if (tercih=="cikis"){
+            cout<<"x caddesi cikis caddesi olmustur.\n";
+            giriscikis[0][1]=-1;
+            giriscikis[4][0]=-1;
+            cikis++;
+        }else{
+            cout<<"tanimsiz deger girdiniz.\n";
+            goto x2_sec;
+        }
+        
+        y2_sec:
+        cout<<"y caddesi giris caddesi mi cikis caddesi mi?(giris-cikis)";
+		cin>>tercih;
+		
+		if(tercih=="giris"){
+            cout<<"y caddesi giris caddesi olmustur.\n";
+            giriscikis[1][1]=1;
+            giriscikis[4][1]=1;
+            giris++;
+        }else if (tercih=="cikis"){
+            cout<<"y caddesi cikis caddesi olmustur.\n";
+            giriscikis[1][1]=-1;
+            giriscikis[4][1]=-1;
+            cikis++;
+        }else{
+            cout<<"tanimsiz deger girdiniz.\n";
+            goto y2_sec;
+        }
+        
+        z2_sec:
+        cout<<"z caddesi giris caddesi mi cikis caddesi mi?(giris-cikis)";
+		cin>>tercih;
+		
+		if(tercih=="giris"){
+            if(giris>1){
+                cout<<"Haritaya 2'den fazla giris yapilamamaktadir.\n";
+                goto z2_sec;
+            }else{
+            cout<<"z caddesi giris caddesi olmustur.\n";
+            giriscikis[2][2]=1;
+            giriscikis[4][2]=1;
+            giris++;}
+         }else if (tercih=="cikis"){
+            if(cikis>1){
+                cout<<"Haritaya 2'den fazla cikis yapilamamaktadir.\n";
+                goto z2_sec;
+            }else{
+            cout<<"z caddesi cikis caddesi olmustur.\n";
+            giriscikis[2][2]=-1;
+            giriscikis[4][2]=-1;
+            cikis++;}
+        }else{
+            cout<<"tanimsiz deger girdiniz.\n";
+            goto z2_sec;
+        }
+        
+        t2_sec:
+        cout<<"t caddesi giris caddesi mi cikis caddesi mi?(giris-cikis)";
+		cin>>tercih;
+		
+		if(tercih=="giris"){
+            if(giris>1){
+                cout<<"Haritaya 2'den fazla giris yapilamamaktadir.\n";
+                goto t2_sec;
+            }else{
+            cout<<"t caddesi giris caddesi olmustur.\n";
+            giriscikis[3][0]=1;
+            giriscikis[4][3]=1;
+            }
+        }else if (tercih=="cikis"){
+            if(cikis>1){
+                cout<<"Haritaya 2'den fazla cikis yapilamamaktadir.\n";
+                goto t2_sec;}
+            else{  
+            cout<<"t caddesi cikis caddesi olmustur.\n";
+            giriscikis[3][0]=-1;
+            giriscikis[4][3]=-1;
+            }
+        }else{
+            cout<<"tanimsiz deger girdiniz.\n";
+            goto t2_sec;
+        }
+        
+        cout<<"Harita giris, cikisleri belirlendi.\n\n";
+        
+        for( int j = 0 ; j <= 15 ; j++ ){
+
+             //X
+             line(325,105,325,125);
+             if(giriscikis[0][1]==1){
+                line(325,126,320,121); //-Y
+                line(325,126,330,121); //-Y
+             }else{
+                line(325,104,320,109); //Y
+                line(325,104,330,109); //Y
+             }
+             
+             
+             //Y
+             line(525,325,545,325);
+             if(giriscikis[1][1]==1){
+                line(524,325,529,320); //-X
+                line(524,325,529,330); //-X
+             }else{
+                line(546,325,541,320); //X
+                line(546,325,541,330); //X
+             }
+             
+             //Z
+             line(325,525,325,545);
+             if(giriscikis[2][2]==1){
+                line(325,524,320,529); //Y
+                line(325,524,330,529); //Y
+             }else{
+                line(325,546,320,541); //-Y
+                line(325,546,330,541); //-Y
+             }
+             
+             //T
+             line(105,325,125,325);
+             if(giriscikis[3][0]==1){
+                line(126,325,121,320); //X
+                line(126,325,121,330); //X
+             }else{
+                line(104,325,109,320); //-X
+                line(104,325,109,330); //-X
+             }
+
+             setcolor(j);
+             delay(100);
+             //if ( j == 15 ) j = 2;
+        }
+        
+        cout<<"********CADDELERIN YONUNU BELIRLEME*********\n";
+        		
+        a2_sec:
+		cout<<"a caddesi baslangic noktasi?(t-x):";
+		cin>>tercih;
+		cout<<"a caddesinin yonu ?(t-x):";
+		cin>>tercih2;
+		
+		if(tercih=="t" && tercih2=="x"){
+            cout<<"a caddesinin yonu belirlenmistir.\n";
+            giriscikis[0][0]=1;
+            giriscikis[3][1]=-1;
+        }else if (tercih=="x" && tercih2=="t"){
+            cout<<"a caddesinin yonu belirlenmistir.\n";
+            giriscikis[0][0]=-1;
+            giriscikis[3][1]=1;
+        }else if ((tercih=="x" && tercih2=="x") || (tercih=="t" && tercih2=="t")){
+            cout<<"Baslangic noktasi ile yon ayni olamaz.\n";
+            goto a2_sec;
+        }else{
+            cout<<"tanimsiz deger girdiniz.\n";
+            goto a2_sec;
+        }
+        
+        b2_sec:
+		cout<<"b caddesi baslangic noktasi?(x-y):";
+		cin>>tercih;
+		cout<<"b caddesinin yonu ?(x-y):";
+		cin>>tercih2;
+		
+		if(tercih=="y" && tercih2=="x"){
+            if(giriscikis[0][0]==1 && giriscikis[0][1]==1){
+                cout<<"Kavsak noktasina cakisma olmaktadir.\n";
+                goto b2_sec;
+            }else{
+                cout<<"b caddesinin yonu belirlenmistir.\n";
+                giriscikis[0][2]=1;
+                giriscikis[1][0]=-1;
+            }
+        }else if (tercih=="x" && tercih2=="y"){
+            if(giriscikis[0][0]==-1 && giriscikis[0][1]==-1){
+                cout<<"Kavsak noktasina cakisma olmaktadir.\n";
+                goto b2_sec;
+            }else{
+                cout<<"b caddesinin yonu belirlenmistir.\n";
+                giriscikis[0][2]=-1;
+                giriscikis[1][0]=1;
+            }  
+        }else if ((tercih=="x" && tercih2=="x") || (tercih=="y" && tercih2=="y")){
+            cout<<"Baslangic noktasi ile yon ayni olamaz.\n";
+            goto b2_sec;
+        }else{
+            cout<<"tanimsiz deger girdiniz.\n";
+            goto b2_sec;
+        }
+        
+        d2_sec:
+		cout<<"d caddesi baslangic noktasi?(y-z):";
+		cin>>tercih;
+		cout<<"d caddesinin yonu ?(y-z):";
+		cin>>tercih2;
+		
+		if(tercih=="z" && tercih2=="y"){
+            cout<<"d caddesinin yonu belirlenmistir.\n";
+            giriscikis[1][2]=1;
+            giriscikis[2][1]=-1;
+        }else if (tercih=="y" && tercih2=="z"){
+            cout<<"d caddesinin yonu belirlenmistir.\n";
+            giriscikis[1][2]=-1;
+            giriscikis[2][1]=1;
+        }else if ((tercih=="y" && tercih2=="y") || (tercih=="z" && tercih2=="z")){
+            cout<<"Baslangic noktasi ile yon ayni olamaz.\n";
+            goto d2_sec;
+        }else{
+            cout<<"tanimsiz deger girdiniz.\n";
+            goto d2_sec;
+        }
+        
+        c2_sec:
+		cout<<"c caddesi baslangic noktasi?(t-z):";
+		cin>>tercih;
+		cout<<"c caddesinin yonu ?(t-z):";
+		cin>>tercih2;
+		
+		if(tercih=="z" && tercih2=="t"){
+            if(giriscikis[2][1]==-1 && giriscikis[2][2]==-1){
+                cout<<"Kavsak noktasina cakisma olmaktadir.\n";
+                goto c2_sec;
+            }else{
+                cout<<"c caddesinin yonu belirlenmistir.\n";
+                giriscikis[2][0]=-1;
+                giriscikis[3][2]=1;
+            }
+        }else if (tercih=="t" && tercih2=="z"){
+            if(giriscikis[2][1]==1 && giriscikis[2][2]==1){
+                cout<<"Kavsak noktasina cakisma olmaktadir.\n";
+                goto c2_sec;
+            }else{
+                cout<<"c caddesinin yonu belirlenmistir.\n";
+                giriscikis[2][0]=1;
+                giriscikis[3][2]=-1;
+            }  
+        }else if ((tercih=="t" && tercih2=="t") || (tercih=="z" && tercih2=="z")){
+            cout<<"Baslangic noktasi ile yon ayni olamaz.\n";
+            goto c2_sec;
+        }else{
+            cout<<"tanimsiz deger girdiniz.\n";
+            goto c2_sec;
+        }
+        
+        e_sec:
+		cout<<"e caddesi baslangic noktasi?(t-y):";
+		cin>>tercih;
+		cout<<"e caddesinin yonu ?(t-y):";
+		cin>>tercih2;
+		
+		if(tercih=="t" && tercih2=="y"){
+            if((giriscikis[1][0]==1 && giriscikis[1][1]==1 && giriscikis[1][2]==1) || (giriscikis[3][0]==-1 && giriscikis[3][1]==-1 && giriscikis[3][2]==-1)){
+                cout<<"Kavsak noktasina cakisma olmaktadir.\n";
+                goto e_sec;
+            }else{
+                cout<<"e caddesinin yonu belirlenmistir.\n";
+                giriscikis[1][3]=1;
+                giriscikis[3][3]=-1;
+            }
+        }else if (tercih=="y" && tercih2=="t"){
+            if((giriscikis[1][0]==-1 && giriscikis[1][1]==-1 && giriscikis[1][2]==-1) || (giriscikis[3][0]==1 && giriscikis[3][1]==1 && giriscikis[3][2]==1)){
+                cout<<"Kavsak noktasina cakisma olmaktadir.\n";
+                goto e_sec;
+            }else{
+                cout<<"e caddesinin yonu belirlenmistir.\n";
+                giriscikis[1][3]=-1;
+                giriscikis[3][3]=1;  
+            }
+        }else if ((tercih=="t" && tercih2=="t") || (tercih=="y" && tercih2=="y")){
+            cout<<"Baslangic noktasi ile yon ayni olamaz.\n";
+            goto e_sec;
+        }else{
+            cout<<"tanimsiz deger girdiniz.\n";
+            goto e_sec;
+        }
+        
+        
+        cout<<"Haritadaki caddelerin yonleri belirlendi.\n\n";
+        
+        for( int j = 0 ; j <= 15 ; j++ ){
+
+             //A
+             line(202,233,224,211);
+             if(giriscikis[0][0]==1){
+                line(224,211,216,211); //UST
+                line(224,211,224,219); //UST
+             }else{
+                line(202,233,202,225); //ALT
+                line(202,233,210,233); //ALT
+             }
+             
+             
+             //B
+             line(429,210,451,232);
+             if(giriscikis[0][2]==1){
+                line(429,210,429,218); //UST
+                line(429,210,438,210); //UST
+             }else{
+                line(451,232,443,232); //ALT
+                line(451,232,451,224); //ALT
+             }
+             
+             //C
+             line(202,417,224,439);
+             if(giriscikis[3][2]==1){
+                line(202,417,202,425); //UST
+                line(202,417,210,417); //UST
+             }else{
+                line(224,439,216,439); //ALT
+                line(224,439,224,431); //ALT
+             }
+             
+             //D
+             line(429,440,451,418);
+             if(giriscikis[1][2]==1){
+                line(451,418,443,418); //UST
+                line(451,418,451,426); //UST
+             }else{
+                line(429,440,429,432); //ALT
+                line(429,440,437,440); //ALT
+             }
+             
+             //E
+             line(256,325,276,325);
+             line(373,325,393,325);
+             if(giriscikis[1][3]==1){
+                line(277,325,272,320); //X
+                line(277,325,272,330); //X
+                
+                line(394,325,389,320); //X
+                line(394,325,389,330); //X
+             }else{
+                line(255,325,260,320); //-X
+                line(255,325,260,330); //-X
+                
+                line(372,325,377,320); //-X
+                line(372,325,377,330); //-X
+             }
+             
+             
+             //Y
+             line(525,325,545,325);
+             if(giriscikis[1][1]==1){
+                line(524,325,529,320); //-X
+                line(524,325,529,330); //-X
+             }else{
+                line(546,325,541,320); //X
+                line(546,325,541,330); //X
+             }
+             
+             
+
+             setcolor(j);
+             delay(100);
+             //if ( j == 15 ) j = 2;
+        }
+        
+        cout<<"x caddesinden gecen ortalama arac sayisi(bilinmiyorsa -1):";
+        cin>>yollar[0];
+        if(yollar[0]!=-1){
+            kavsak[0][1]=giriscikis[0][1]*yollar[0];
+            kavsak[4][0]=giriscikis[4][0]*yollar[0];
+            kavsaktoplam[0]+=giriscikis[0][1]*yollar[0];
+            kavsaktoplam[4]+=giriscikis[4][0]*yollar[0];
+        }else{
+            kavsak[0][1]=giriscikis[0][1]*(1000-unknown);
+            kavsak[4][0]=giriscikis[4][0]*(1000-unknown);
+            unknown++;
+        }
+
+        cout<<"y caddesinden gecen ortalama arac sayisi(bilinmiyorsa -1):";
+        cin>>yollar[1];
+        if(yollar[1]!=-1){
+            kavsak[1][1]=giriscikis[1][1]*yollar[1];
+            kavsak[4][1]=giriscikis[4][1]*yollar[1];
+            kavsaktoplam[1]+=giriscikis[1][1]*yollar[1];
+            kavsaktoplam[4]+=giriscikis[4][1]*yollar[1];
+        }else{
+            kavsak[1][1]=giriscikis[1][1]*(1000-unknown);
+            kavsak[4][1]=giriscikis[4][1]*(1000-unknown);
+            unknown++;
+        }
+
+        cout<<"z caddesinden gecen ortalama arac sayisi(bilinmiyorsa -1):";
+        cin>>yollar[2];
+        if(yollar[2]!=-1){
+            kavsak[2][2]=giriscikis[2][2]*yollar[2];
+            kavsak[4][2]=giriscikis[4][2]*yollar[2];
+            kavsaktoplam[2]+=giriscikis[2][2]*yollar[2];
+            kavsaktoplam[4]+=giriscikis[4][2]*yollar[2];
+        }else{
+            kavsak[2][2]=giriscikis[2][2]*(1000-unknown);
+            kavsak[4][2]=giriscikis[4][2]*(1000-unknown);
+            unknown++;
+        }
+
+        cout<<"t caddesinden gecen ortalama arac sayisi(bilinmiyorsa -1):";
+        cin>>yollar[3];
+        if(yollar[3]!=-1){
+            kavsak[3][0]=giriscikis[3][0]*yollar[3];
+            kavsak[4][3]=giriscikis[4][3]*yollar[3];
+            kavsaktoplam[3]+=giriscikis[3][0]*yollar[3];
+            kavsaktoplam[4]+=giriscikis[4][3]*yollar[3];
+        }else{
+            kavsak[3][0]=giriscikis[3][0]*(1000-unknown);
+            kavsak[4][3]=giriscikis[4][3]*(1000-unknown);
+            unknown++;
+        }
+
+        cout<<"a caddesinden gecen ortalama arac sayisi(bilinmiyorsa -1):";
+        cin>>yollar[4];
+        if(yollar[4]!=-1){
+            kavsak[0][0]=giriscikis[0][0]*yollar[4];
+            kavsak[3][1]=giriscikis[3][1]*yollar[4];
+            kavsaktoplam[0]+=giriscikis[0][0]*yollar[4];
+            kavsaktoplam[3]+=giriscikis[3][1]*yollar[4];
+        }else{
+            kavsak[0][0]=giriscikis[0][0]*(1000-unknown);
+            kavsak[3][1]=giriscikis[3][1]*(1000-unknown);
+            unknown++;
+        }
+
+        cout<<"b caddesinden gecen ortalama arac sayisi(bilinmiyorsa -1):";
+        cin>>yollar[5];
+        if(yollar[5]!=-1){
+            kavsak[0][2]=giriscikis[0][2]*yollar[5];
+            kavsak[1][0]=giriscikis[1][0]*yollar[5];
+            kavsaktoplam[0]+=giriscikis[0][2]*yollar[5];
+            kavsaktoplam[1]+=giriscikis[1][0]*yollar[5];
+        }else{
+            kavsak[0][2]=giriscikis[0][2]*(1000-unknown);
+            kavsak[1][0]=giriscikis[1][0]*(1000-unknown);
+            unknown++;
+        }
+
+        cout<<"d caddesinden gecen ortalama arac sayisi(bilinmiyorsa -1):";
+        cin>>yollar[6];
+        if(yollar[6]!=-1){
+            kavsak[1][2]=giriscikis[1][2]*yollar[6];
+            kavsak[2][1]=giriscikis[2][1]*yollar[6];
+            kavsaktoplam[1]+=giriscikis[1][2]*yollar[6];
+            kavsaktoplam[2]+=giriscikis[2][1]*yollar[6];
+        }else{
+            kavsak[1][2]=giriscikis[1][2]*(1000-unknown);
+            kavsak[2][1]=giriscikis[2][1]*(1000-unknown);
+            unknown++;
+        }
+
+        cout<<"c caddesinden gecen ortalama arac sayisi(bilinmiyorsa -1):";
+        cin>>yollar[7];
+        if(yollar[7]!=-1){
+            kavsak[2][0]=giriscikis[2][0]*yollar[7];
+            kavsak[3][2]=giriscikis[3][2]*yollar[7];
+            kavsaktoplam[2]+=giriscikis[2][0]*yollar[7];
+            kavsaktoplam[3]+=giriscikis[3][2]*yollar[7];
+        }else{
+            kavsak[2][0]=giriscikis[2][0]*(1000-unknown);
+            kavsak[3][2]=giriscikis[3][2]*(1000-unknown);
+            unknown++;
+        }
+        
+        cout<<"e caddesinden gecen ortalama arac sayisi(bilinmiyorsa -1):";
+        cin>>yollar[8];
+        if(yollar[8]!=-1){
+            kavsak[1][3]=giriscikis[1][3]*yollar[8];
+            kavsak[3][3]=giriscikis[3][3]*yollar[8];
+            kavsaktoplam[1]+=giriscikis[1][3]*yollar[8];
+            kavsaktoplam[3]+=giriscikis[3][3]*yollar[8];
+        }else{
+            kavsak[1][3]=giriscikis[1][3]*(1000-unknown);
+            kavsak[3][3]=giriscikis[3][3]*(1000-unknown);
+            unknown++;
+        }
+
+        double matris[5][unknown];
+
+        for(int i=0;i<5;i++){
+            for(int j=0;j<unknown;j++){
+                matris[i][j]=0;
+            }
+        }
+
+        for(int k=0;k<unknown;k++){
+            for(int i=0;i<5;i++){
+                for(int j=0;j<4;j++){
+                    if(kavsak[i][j]==-(999-k)){
+                        matris[i][k]=-1;
+                    }else if(kavsak[i][j]==(999-k)){
+                        matris[i][k]=1;
+                    }
+                }
+            }
+        }
+        
+        for(int i=0;i<5;i++){
+            matris[i][unknown-1]=-1*kavsaktoplam[i];
+        }
+        
+        cout<<"\nGauss Jordan yontemini girmeden once olusan matris:\n\n";
+        for(int i=0;i<5;i++){
+            for(int j=0;j<unknown;j++){
+                printf("%.1lf\t",matris[i][j]);
+            } printf("\n");
+        } 
+        
+        double x[10];
+
+        int i,j,k;
+        for(i=0;i<4;i++){
+            for(k=i+1;k<4;k++){
+                if(fabs(matris[i][i])<fabs(matris[k][i])){
+                    for(j=0;j<unknown;j++){
+                        double temp;
+                        temp=matris[i][j];
+                        matris[i][j]=matris[k][j];
+                        matris[k][j]=temp;
+                    }
+                }
+            }
+            
+            for(k=i+1;k<5;k++){
+                double temp2=matris[k][i]/ matris[i][i];
+                for(j=0;j<unknown;j++){
+                    matris[k][j]=matris[k][j]-temp2*matris[i][j];
+                }
+            }
+
+        }
+
+        for(i=4;i>=0;i--){
+            x[i]=matris[i][unknown-1];
+            for(j=i+1;j<unknown-1;j++){
+                x[i]=x[i]-matris[i][j]*x[j];
+            }
+            x[i]=x[i]/matris[i][i];
+        }
+
+        cout<<"\nBilinmeyen yollarin sonuclari:\n\n";
+        for(int i=0;i<unknown-1;i++){
+            printf("%d. Bilinmeyen Yol=\t%.1lf\n",i+1,x[i]);
+        }
+        
+        exit2_sec:
+		cout<<"Hesaplanma tamamlanmistir, cikis yapmak icin cikis yaziniz:";
+		cin>>tercih;
+		
+		if(tercih=="cikis"){
+            cout<<"Cikis yapiliyor...";
+            delay(500);
+        }else{
+            cout<<"tanimsiz deger girdiniz.\n";
+            goto exit2_sec;
+        }
+    }else{
+       cout<<"Yanlis Secim!\n";
+       goto harita_sec;
+    }
+}

@@ -1,0 +1,1121 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <time.h>
+
+struct gates {
+    int type;
+    int ns;
+}gate[10];
+
+int A,B,C,D,E,F;
+int Y=0,I=0,S=0;
+
+int LOGIC(int type, int var1, int var2){
+    int output;
+    if (type==1){ //AND
+        if(var1==0 && var2==0)
+        output=0;
+        if(var1==1 && var2==0)
+            output=0;
+        if(var1==0 && var2==1)
+            output=0;
+        if(var1==1 && var2==1)
+            output=1;
+        return (output);
+    }
+    if (type==2){ //OR
+        if(var1==0 && var2==0)
+            output=0;
+        if(var1==1 && var2==0)
+            output=1;
+        if(var1==0 && var2==1)
+            output=1;
+        if(var1==1 && var2==1)
+            output=1;
+        return (output);
+    }
+    if (type==3){ //XOR
+        if(var1==0 && var2==0)
+            output=0;
+        if(var1==1 && var2==0)
+            output=1;
+        if(var1==0 && var2==1)
+            output=1;
+        if(var1==1 && var2==1)
+            output=0;
+        return (output);
+    }
+    if (type==5){ //NAND
+        if(var1==0 && var2==0)
+            output=1;
+        if(var1==1 && var2==0)
+            output=1;
+        if(var1==0 && var2==1)
+            output=1;
+        if(var1==1 && var2==1)
+            output=0;
+        return (output);
+    }
+    if (type==6){ //NOR
+        if(var1==0 && var2==0)
+            output=1;
+        if(var1==1 && var2==0)
+            output=0;
+        if(var1==0 && var2==1)
+            output=0;
+        if(var1==1 && var2==1)
+            output=0;
+        return (output);
+    }
+
+}
+
+int NOT(int var1){
+    int output;
+    if(var1==0)
+        output=1;
+    if(var1==1)
+        output=0;
+    return (output);
+}
+
+void DATETIME(){
+    time_t t;
+    struct tm *ptm;
+    time (&t);
+    ptm = localtime(&t);
+    FILE *fp;
+    fp = fopen("komut.txt","a");
+    if (fp==NULL){
+        printf("Dosya acilamadi.");
+        exit(1);
+    }
+    fprintf(fp,"%d/%d/%d - %02d:%02d:%02d", ptm->tm_mday, ptm->tm_mon, ptm->tm_year+1900, ptm->tm_hour, ptm->tm_min, ptm->tm_sec);
+    fclose(fp);
+}
+
+
+void main(){
+    char komut[100];
+    do{
+        printf(">");
+        gets(komut);
+
+        if(!strcmp(komut,"Y") || !strcmp(komut,"Y devre.txt")){
+            FILE *fp,*fp1;
+            char word[100];
+            char words[100][100];
+            char word2[100];
+            char words2[100][100];
+            int c,i=0,b=0,ii=0;
+            fp = fopen("devre.txt","r");
+            if (fp==NULL){
+                printf("Dosya acilamadi.");
+                exit(1);
+            }
+            do{
+                c = fscanf(fp,"%s",word);
+                    if (c != EOF){
+                strcpy(words[i],word);
+                i++;
+              }
+            }while (c != EOF);
+            fclose(fp);
+
+            for (int a=0;a<i;a++){
+                if(!strcmp(words[a],".include")){
+                    fp1 = fopen(words[a+1],"r");
+                    if (fp1==NULL){
+                        printf("Dosya acilamadi.");
+                        exit(1);
+                    }
+                    do{
+                        c = fscanf(fp1,"%s",word2);
+                            if (c != EOF){
+                        strcpy(words2[ii],word2);
+                        ii++;
+                      }
+                    }while (c != EOF);
+                    fclose(fp1);
+                }
+            }
+
+            for (int a=0;a<ii;a++){
+                if(!strcmp(words2[a],".kapi")){
+                    if(!strcmp(words2[a+1],"AND")){
+                        gate[b].type=1;
+                    }
+                    if(!strcmp(words2[a+1],"OR")){
+                        gate[b].type=2;
+                    }
+                    if(!strcmp(words2[a+1],"XOR")){
+                        gate[b].type=3;
+                    }
+                    if(!strcmp(words2[a+1],"NOT")){
+                        gate[b].type=4;
+                    }
+                    if(!strcmp(words2[a+1],"NAND")){
+                        gate[b].type=5;
+                    }
+                    if(!strcmp(words2[a+1],"NOR")){
+                        gate[b].type=6;
+                    }
+
+                    gate[b].ns=atoi(words2[a+6]);
+                b++;
+                }
+            }
+
+            for (int a=0;a<i;a++){
+                if(!strcmp(words[a],".kapi")){
+                    if(!strcmp(words[a+1],"AND")){
+                        gate[b].type=1;
+                    }
+                    if(!strcmp(words[a+1],"OR")){
+                        gate[b].type=2;
+                    }
+                    if(!strcmp(words[a+1],"XOR")){
+                        gate[b].type=3;
+                    }
+                    if(!strcmp(words[a+1],"NOT")){
+                        gate[b].type=4;
+                    }
+                    if(!strcmp(words[a+1],"NAND")){
+                        gate[b].type=5;
+                    }
+                    if(!strcmp(words[a+1],"NOR")){
+                        gate[b].type=6;
+                    }
+
+                    gate[b].ns=atoi(words[a+6]);
+                b++;
+                }
+           }
+            printf("devre.txt yuklendi\n");
+            Y=1;
+            FILE *fp3;
+            fp3 = fopen("komut.txt","w");
+            if (fp3==NULL){
+                printf("Dosya acilamadi.");
+                exit(1);
+            }
+            fprintf(fp3,"%s%s%s","zaman\t\t\t","komut\t\t","cikti\n");
+            fclose(fp3);
+            DATETIME();
+            FILE *fp2;
+            fp2 = fopen("komut.txt","a");
+            if (fp2==NULL){
+                printf("Dosya acilamadi.");
+                exit(1);
+            }
+            fprintf(fp2,"%s %s","\tY devre.txt","\tdevre.txt yuklendi\n");
+            fclose(fp2);
+        }
+
+        if(!strcmp(komut,"I") || !strcmp(komut,"I deger.txt")){
+            FILE *fp;
+            int cc,j=0;
+            char word[100];
+            char words[100][100];
+            fp = fopen("deger.txt","r");
+            if (fp==NULL){
+                printf("Dosya acilamadi.");
+                exit(1);
+            }
+            do{
+                cc = fscanf(fp,"%s",word);
+                    if (cc != EOF){
+                strcpy(words[j],word);
+                j++;
+              }
+            }while (cc != EOF);
+            fclose(fp);
+
+            A=atoi(words[1]);
+            B=atoi(words[3]);
+            C=atoi(words[5]);
+            D=atoi(words[7]);
+            E=atoi(words[9]);
+            F=atoi(words[11]);
+
+            printf("%d\t%d\t%d\t%d\t%d\t%d\t",A,B,C,D,E,F);
+            printf("\ndeger.txt yuklendi\n");
+            I=1;
+            DATETIME();
+            FILE *fp2;
+            fp2 = fopen("komut.txt","a");
+            if (fp2==NULL){
+                printf("Dosya acilamadi.");
+                exit(1);
+            }
+            fprintf(fp2,"%s %s","\tI deger.txt","\tdeger.txt yuklendi\n");
+            fclose(fp2);
+        }
+
+        if(!strcmp(komut,"H a")){
+            if (Y==1 && I==1){
+                FILE *fp;
+                fp = fopen("simulasyon.txt","w");
+                if (fp==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                int a=A;
+                A=1;
+                fprintf(fp,"0ns: a:%d->%d\n",a,A);
+                if(gate[0].ns>gate[1].ns){
+                    if(gate[1].type==4){
+                        E=NOT(E);
+                    }else{
+                        E=LOGIC(gate[1].type,B,C);
+                    }
+                    fprintf(fp,"%dns: e:%d->%d\n",gate[1].ns,NOT(E),E);
+                        if(gate[0].ns>gate[1].ns+gate[2].ns){
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[1].ns+gate[2].ns,NOT(F),F);
+
+                            if(gate[0].type==4){
+                                D=NOT(D);
+                            }else{
+                                D=LOGIC(gate[0].type,A,B);
+                            }
+
+                            fprintf(fp,"%dns: d:%d->%d\n",gate[0].ns,NOT(D),D);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[0].ns+gate[2].ns,NOT(F),F);
+                        }else{
+                            if(gate[0].type==4){
+                                D=NOT(D);
+                            }else{
+                                D=LOGIC(gate[0].type,A,B);
+                            }
+                            fprintf(fp,"%dns: d:%d->%d\n",gate[0].ns,NOT(D),D);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[0].ns+gate[2].ns,NOT(F),F);
+                        }
+
+                }else{
+                    if(gate[0].type==4){
+                        D=NOT(D);
+                    }else{
+                        D=LOGIC(gate[0].type,A,B);
+                    }
+                    fprintf(fp,"%dns: d:%d->%d\n",gate[0].ns,NOT(D),D);
+                        if(gate[1].ns>gate[0].ns+gate[2].ns){
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[0].ns+gate[2].ns,NOT(F),F);
+
+                            if(gate[1].type==4){
+                                E=NOT(E);
+                            }else{
+                                E=LOGIC(gate[1].type,B,C);
+                            }
+                            fprintf(fp,"%dns: e:%d->%d\n",gate[1].ns,NOT(E),E);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[1].ns+gate[2].ns,NOT(F),F);
+                        }else{
+                            if(gate[1].type==4){
+                                E=NOT(E);
+                            }else{
+                                E=LOGIC(gate[1].type,B,C);
+                            }
+                            fprintf(fp,"%dns: e:%d->%d\n",gate[1].ns,NOT(E),E);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[1].ns+gate[2].ns,NOT(F),F);
+                        }
+                }
+                fclose(fp);
+                printf("a=1 olarak atandi\n");
+                S=1;
+                DATETIME();
+                FILE *fp2;
+                fp2 = fopen("komut.txt","a");
+                if (fp2==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                fprintf(fp2,"%s %s","\tH a","\t\ta=1 olarak atandi\n");
+                fclose(fp2);
+            }else
+                printf("Y ve I komutlari daha once calistirilmamistir.\n");
+        }
+
+        if(!strcmp(komut,"H b")){
+            if (Y==1 && I==1){
+                FILE *fp;
+                fp = fopen("simulasyon.txt","w");
+                if (fp==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                int b=B;
+                B=1;
+                fprintf(fp,"0ns: b:%d->%d\n",b,B);
+                if(gate[0].ns>gate[1].ns){
+                    if(gate[1].type==4){
+                        E=NOT(E);
+                    }else{
+                        E=LOGIC(gate[1].type,B,C);
+                    }
+                    fprintf(fp,"%dns: e:%d->%d\n",gate[1].ns,NOT(E),E);
+                        if(gate[0].ns>gate[1].ns+gate[2].ns){
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[1].ns+gate[2].ns,NOT(F),F);
+
+                            if(gate[0].type==4){
+                                D=NOT(D);
+                            }else{
+                                D=LOGIC(gate[0].type,A,B);
+                            }
+                            fprintf(fp,"%dns: d:%d->%d\n",gate[0].ns,NOT(D),D);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[0].ns+gate[2].ns,NOT(F),F);
+                        }else{
+                            if(gate[0].type==4){
+                                D=NOT(D);
+                            }else{
+                                D=LOGIC(gate[0].type,A,B);
+                            }
+                            fprintf(fp,"%dns: d:%d->%d\n",gate[0].ns,NOT(D),D);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[0].ns+gate[2].ns,NOT(F),F);
+                        }
+
+                }else{
+                    if(gate[0].type==4){
+                        D=NOT(D);
+                    }else{
+                        D=LOGIC(gate[0].type,A,B);
+                    }
+                    fprintf(fp,"%dns: d:%d->%d\n",gate[0].ns,NOT(D),D);
+                        if(gate[1].ns>gate[0].ns+gate[2].ns){
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            };
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[0].ns+gate[2].ns,NOT(F),F);
+
+                            if(gate[1].type==4){
+                                E=NOT(E);
+                            }else{
+                                E=LOGIC(gate[1].type,B,C);
+                            }
+                            fprintf(fp,"%dns: e:%d->%d\n",gate[1].ns,NOT(E),E);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[1].ns+gate[2].ns,NOT(F),F);
+                        }else{
+                            if(gate[1].type==4){
+                                E=NOT(E);
+                            }else{
+                                E=LOGIC(gate[1].type,B,C);
+                            }
+                            fprintf(fp,"%dns: e:%d->%d\n",gate[1].ns,NOT(E),E);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[1].ns+gate[2].ns,NOT(F),F);
+                        }
+                }
+                fclose(fp);
+                printf("b=1 olarak atandi\n");
+                S=1;
+                DATETIME();
+                FILE *fp2;
+                fp2 = fopen("komut.txt","a");
+                if (fp2==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                fprintf(fp2,"%s %s","\tH b","\t\tb=1 olarak atandi\n");
+                fclose(fp2);
+            }else
+                printf("Y ve I komutlari daha once calistirilmamistir.\n");
+        }
+
+        if(!strcmp(komut,"H c")){
+            if (Y==1 && I==1){
+                FILE *fp;
+                fp = fopen("simulasyon.txt","w");
+                if (fp==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                int c=C;
+                C=1;
+                fprintf(fp,"0ns: c:%d->%d\n",c,C);
+                if(gate[0].ns>gate[1].ns){
+                    if(gate[1].type==4){
+                        E=NOT(E);
+                    }else{
+                        E=LOGIC(gate[1].type,B,C);
+                    }
+                    fprintf(fp,"%dns: e:%d->%d\n",gate[1].ns,NOT(E),E);
+                        if(gate[0].ns>gate[1].ns+gate[2].ns){
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[1].ns+gate[2].ns,NOT(F),F);
+
+                            if(gate[0].type==4){
+                                D=NOT(D);
+                            }else{
+                                D=LOGIC(gate[0].type,A,B);
+                            }
+                            fprintf(fp,"%dns: d:%d->%d\n",gate[0].ns,NOT(D),D);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[0].ns+gate[2].ns,NOT(F),F);
+                        }else{
+                            if(gate[0].type==4){
+                                D=NOT(D);
+                            }else{
+                                D=LOGIC(gate[0].type,A,B);
+                            }
+                            fprintf(fp,"%dns: d:%d->%d\n",gate[0].ns,NOT(D),D);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[0].ns+gate[2].ns,NOT(F),F);
+                        }
+
+                }else{
+                    if(gate[0].type==4){
+                        D=NOT(D);
+                    }else{
+                        D=LOGIC(gate[0].type,A,B);
+                    }
+                    fprintf(fp,"%dns: d:%d->%d\n",gate[0].ns,NOT(D),D);
+                        if(gate[1].ns>gate[0].ns+gate[2].ns){
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[0].ns+gate[2].ns,NOT(F),F);
+
+                            if(gate[1].type==4){
+                                E=NOT(E);
+                            }else{
+                                E=LOGIC(gate[1].type,B,C);
+                            }
+                            fprintf(fp,"%dns: e:%d->%d\n",gate[1].ns,NOT(E),E);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[1].ns+gate[2].ns,NOT(F),F);
+                        }else{
+                            if(gate[1].type==4){
+                                E=NOT(E);
+                            }else{
+                                E=LOGIC(gate[1].type,B,C);
+                            }
+                            fprintf(fp,"%dns: e:%d->%d\n",gate[1].ns,NOT(E),E);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[1].ns+gate[2].ns,NOT(F),F);
+                        }
+                }
+                fclose(fp);
+                printf("c=1 olarak atandi\n");
+                S=1;
+                DATETIME();
+                FILE *fp2;
+                fp2 = fopen("komut.txt","a");
+                if (fp2==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                fprintf(fp2,"%s %s","\tH c","\t\tc=1 olarak atandi\n");
+                fclose(fp2);
+            }else
+                printf("Y ve I komutlari daha once calistirilmamistir.\n");
+        }
+
+        if(!strcmp(komut,"L a")){
+            if (Y==1 && I==1){
+                FILE *fp;
+                fp = fopen("simulasyon.txt","w");
+                if (fp==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                int a=A;
+                A=0;
+                fprintf(fp,"0ns: a:%d->%d\n",a,A);
+                if(gate[0].ns>gate[1].ns){
+                    if(gate[1].type==4){
+                        E=NOT(E);
+                    }else{
+                        E=LOGIC(gate[1].type,B,C);
+                    }
+                    fprintf(fp,"%dns: e:%d->%d\n",gate[1].ns,NOT(E),E);
+                        if(gate[0].ns>gate[1].ns+gate[2].ns){
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[1].ns+gate[2].ns,NOT(F),F);
+
+                            if(gate[0].type==4){
+                                D=NOT(D);
+                            }else{
+                                D=LOGIC(gate[0].type,A,B);
+                            }
+
+                            fprintf(fp,"%dns: d:%d->%d\n",gate[0].ns,NOT(D),D);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[0].ns+gate[2].ns,NOT(F),F);
+                        }else{
+                            if(gate[0].type==4){
+                                D=NOT(D);
+                            }else{
+                                D=LOGIC(gate[0].type,A,B);
+                            }
+                            fprintf(fp,"%dns: d:%d->%d\n",gate[0].ns,NOT(D),D);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[0].ns+gate[2].ns,NOT(F),F);
+                        }
+
+                }else{
+                    if(gate[0].type==4){
+                        D=NOT(D);
+                    }else{
+                        D=LOGIC(gate[0].type,A,B);
+                    }
+                    fprintf(fp,"%dns: d:%d->%d\n",gate[0].ns,NOT(D),D);
+                        if(gate[1].ns>gate[0].ns+gate[2].ns){
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[0].ns+gate[2].ns,NOT(F),F);
+
+                            if(gate[1].type==4){
+                                E=NOT(E);
+                            }else{
+                                E=LOGIC(gate[1].type,B,C);
+                            }
+                            fprintf(fp,"%dns: e:%d->%d\n",gate[1].ns,NOT(E),E);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[1].ns+gate[2].ns,NOT(F),F);
+                        }else{
+                            if(gate[1].type==4){
+                                E=NOT(E);
+                            }else{
+                                E=LOGIC(gate[1].type,B,C);
+                            }
+                            fprintf(fp,"%dns: e:%d->%d\n",gate[1].ns,NOT(E),E);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[1].ns+gate[2].ns,NOT(F),F);
+                        }
+                }
+                fclose(fp);
+                printf("a=0 olarak atandi\n");
+                S=1;
+                DATETIME();
+                FILE *fp2;
+                fp2 = fopen("komut.txt","a");
+                if (fp2==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                fprintf(fp2,"%s %s","\tL a","\t\ta=0 olarak atandi\n");
+                fclose(fp2);
+            }else
+                printf("Y ve I komutlari daha once calistirilmamistir.\n");
+        }
+
+        if(!strcmp(komut,"L b")){
+            if (Y==1 && I==1){
+                FILE *fp;
+                fp = fopen("simulasyon.txt","w");
+                if (fp==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                int b=B;
+                B=0;
+                fprintf(fp,"0ns: b:%d->%d\n",b,B);
+                if(gate[0].ns>gate[1].ns){
+                    if(gate[1].type==4){
+                        E=NOT(E);
+                    }else{
+                        E=LOGIC(gate[1].type,B,C);
+                    }
+                    fprintf(fp,"%dns: e:%d->%d\n",gate[1].ns,NOT(E),E);
+                        if(gate[0].ns>gate[1].ns+gate[2].ns){
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[1].ns+gate[2].ns,NOT(F),F);
+
+                            if(gate[0].type==4){
+                                D=NOT(D);
+                            }else{
+                                D=LOGIC(gate[0].type,A,B);
+                            }
+                            fprintf(fp,"%dns: d:%d->%d\n",gate[0].ns,NOT(D),D);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[0].ns+gate[2].ns,NOT(F),F);
+                        }else{
+                            if(gate[0].type==4){
+                                D=NOT(D);
+                            }else{
+                                D=LOGIC(gate[0].type,A,B);
+                            }
+                            fprintf(fp,"%dns: d:%d->%d\n",gate[0].ns,NOT(D),D);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[0].ns+gate[2].ns,NOT(F),F);
+                        }
+
+                }else{
+                    if(gate[0].type==4){
+                        D=NOT(D);
+                    }else{
+                        D=LOGIC(gate[0].type,A,B);
+                    }
+                    fprintf(fp,"%dns: d:%d->%d\n",gate[0].ns,NOT(D),D);
+                        if(gate[1].ns>gate[0].ns+gate[2].ns){
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            };
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[0].ns+gate[2].ns,NOT(F),F);
+
+                            if(gate[1].type==4){
+                                E=NOT(E);
+                            }else{
+                                E=LOGIC(gate[1].type,B,C);
+                            }
+                            fprintf(fp,"%dns: e:%d->%d\n",gate[1].ns,NOT(E),E);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[1].ns+gate[2].ns,NOT(F),F);
+                        }else{
+                            if(gate[1].type==4){
+                                E=NOT(E);
+                            }else{
+                                E=LOGIC(gate[1].type,B,C);
+                            }
+                            fprintf(fp,"%dns: e:%d->%d\n",gate[1].ns,NOT(E),E);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[1].ns+gate[2].ns,NOT(F),F);
+                        }
+                }
+                fclose(fp);
+                printf("b=0 olarak atandi\n");
+                S=1;
+                DATETIME();
+                FILE *fp2;
+                fp2 = fopen("komut.txt","a");
+                if (fp2==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                fprintf(fp2,"%s %s","\tL b","\t\tb=0 olarak atandi\n");
+                fclose(fp2);
+            }else
+                printf("Y ve I komutlari daha once calistirilmamistir.\n");
+        }
+
+        if(!strcmp(komut,"L c")){
+            if (Y==1 && I==1){
+                FILE *fp;
+                fp = fopen("simulasyon.txt","w");
+                if (fp==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                int c=C;
+                C=0;
+                fprintf(fp,"0ns: c:%d->%d\n",c,C);
+                if(gate[0].ns>gate[1].ns){
+                    if(gate[1].type==4){
+                        E=NOT(E);
+                    }else{
+                        E=LOGIC(gate[1].type,B,C);
+                    }
+                    fprintf(fp,"%dns: e:%d->%d\n",gate[1].ns,NOT(E),E);
+                        if(gate[0].ns>gate[1].ns+gate[2].ns){
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[1].ns+gate[2].ns,NOT(F),F);
+
+                            if(gate[0].type==4){
+                                D=NOT(D);
+                            }else{
+                                D=LOGIC(gate[0].type,A,B);
+                            }
+                            fprintf(fp,"%dns: d:%d->%d\n",gate[0].ns,NOT(D),D);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[0].ns+gate[2].ns,NOT(F),F);
+                        }else{
+                            if(gate[0].type==4){
+                                D=NOT(D);
+                            }else{
+                                D=LOGIC(gate[0].type,A,B);
+                            }
+                            fprintf(fp,"%dns: d:%d->%d\n",gate[0].ns,NOT(D),D);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[0].ns+gate[2].ns,NOT(F),F);
+                        }
+
+                }else{
+                    if(gate[0].type==4){
+                        D=NOT(D);
+                    }else{
+                        D=LOGIC(gate[0].type,A,B);
+                    }
+                    fprintf(fp,"%dns: d:%d->%d\n",gate[0].ns,NOT(D),D);
+                        if(gate[1].ns>gate[0].ns+gate[2].ns){
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[0].ns+gate[2].ns,NOT(F),F);
+
+                            if(gate[1].type==4){
+                                E=NOT(E);
+                            }else{
+                                E=LOGIC(gate[1].type,B,C);
+                            }
+                            fprintf(fp,"%dns: e:%d->%d\n",gate[1].ns,NOT(E),E);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[1].ns+gate[2].ns,NOT(F),F);
+                        }else{
+                            if(gate[1].type==4){
+                                E=NOT(E);
+                            }else{
+                                E=LOGIC(gate[1].type,B,C);
+                            }
+                            fprintf(fp,"%dns: e:%d->%d\n",gate[1].ns,NOT(E),E);
+
+                            if(gate[2].type==4){
+                                F=NOT(F);
+                            }else{
+                                F=LOGIC(gate[2].type,D,E);
+                            }
+                            fprintf(fp,"%dns: f:%d->%d\n",gate[1].ns+gate[2].ns,NOT(F),F);
+                        }
+                }
+                fclose(fp);
+                printf("c=0 olarak atandi\n");
+                S=1;
+                DATETIME();
+                FILE *fp2;
+                fp2 = fopen("komut.txt","a");
+                if (fp2==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                fprintf(fp2,"%s %s","\tL c","\t\tc=0 olarak atandi\n");
+                fclose(fp2);
+            }else
+                printf("Y ve I komutlari daha once calistirilmamistir.\n");
+        }
+
+        if(!strcmp(komut,"S")){
+            if (Y==1 && I==1){
+                FILE *fp1;
+                char word[100];
+                char *c;
+                fp1 = fopen("simulasyon.txt","r");
+                if (fp1==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                DATETIME();
+                FILE *fp2;
+                fp2 = fopen("komut.txt","a");
+                if (fp2==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                fprintf(fp2,"%s","\tS\t\t");
+
+                do {
+                  c = fgets(word,100,fp1);
+                  if (c != NULL){
+                      printf("%s",word);
+                      fprintf(fp2,"%s",word);
+                  }
+                } while (c != NULL);
+                fclose(fp1);
+                fclose(fp2);
+            }else
+                printf("Y, I ve H veya L komutlari daha once calistirilmamistir.\n");
+        }
+
+        if(!strcmp(komut,"G a")){
+            if (Y==1 && I==1){
+                printf("a:%d\n",A);
+                DATETIME();
+                FILE *fp2;
+                fp2 = fopen("komut.txt","a");
+                if (fp2==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                fprintf(fp2,"%s %s%d\n","\tG a","\t\ta:",A);
+                fclose(fp2);
+            }else
+                printf("Y ve I komutlari daha once calistirilmamistir.\n");
+        }
+
+        if(!strcmp(komut,"G b")){
+            if (Y==1 && I==1){
+                printf("b:%d\n",B);
+                DATETIME();
+                FILE *fp2;
+                fp2 = fopen("komut.txt","a");
+                if (fp2==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                fprintf(fp2,"%s %s%d\n","\tG b","\t\tb:",B);
+                fclose(fp2);
+            }else
+                printf("Y ve I komutlari daha once calistirilmamistir.\n");
+        }
+
+        if(!strcmp(komut,"G c")){
+            if (Y==1 && I==1){
+                printf("c:%d\n",C);
+                DATETIME();
+                FILE *fp2;
+                fp2 = fopen("komut.txt","a");
+                if (fp2==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                fprintf(fp2,"%s %s%d\n","\tG c","\t\tc:",C);
+                fclose(fp2);
+            }else
+                printf("Y ve I komutlari daha once calistirilmamistir.\n");
+        }
+
+        if(!strcmp(komut,"G d")){
+            if (Y==1 && I==1){
+                printf("d:%d\n",D);
+                DATETIME();
+                FILE *fp2;
+                fp2 = fopen("komut.txt","a");
+                if (fp2==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                fprintf(fp2,"%s %s%d\n","\tG d","\t\td:",D);
+                fclose(fp2);
+            }else
+                printf("Y ve I komutlari daha once calistirilmamistir.\n");
+        }
+
+        if(!strcmp(komut,"G e")){
+            if (Y==1 && I==1){
+                printf("e:%d\n",E);
+                DATETIME();
+                FILE *fp2;
+                fp2 = fopen("komut.txt","a");
+                if (fp2==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                fprintf(fp2,"%s %s%d\n","\tG e","\t\te:",E);
+                fclose(fp2);
+            }else
+                printf("Y ve I komutlari daha once calistirilmamistir.\n");
+        }
+
+        if(!strcmp(komut,"G f")){
+            if (Y==1 && I==1){
+                printf("f:%d\n",F);
+                DATETIME();
+                FILE *fp2;
+                fp2 = fopen("komut.txt","a");
+                if (fp2==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                fprintf(fp2,"%s %s%d\n","\tG f","\t\tf:",F);
+                fclose(fp2);
+            }else
+                printf("Y ve I komutlari daha once calistirilmamistir.\n");
+        }
+
+        if(!strcmp(komut,"G*")){
+            if (Y==1 && I==1){
+                printf("a:%d\tb:%d\tc:%d\td:%d\te:%d\tf:%d\n",A,B,C,D,E,F);
+                DATETIME();
+                FILE *fp2;
+                fp2 = fopen("komut.txt","a");
+                if (fp2==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+                fprintf(fp2,"%s %s%d %s%d %s%d %s%d %s%d %s%d\n","\tG*","\t\ta:",A,"b:",B,"c:",C,"d:",D,"e:",E,"f:",F);
+                fclose(fp2);
+            }else
+                printf("Y ve I komutlari daha once calistirilmamistir.\n");
+        }
+
+        if(!strcmp(komut,"K")){
+            if (Y==1 && I==1){
+                FILE *fp1;
+                char word[100];
+                char *c;
+                fp1 = fopen("komut.txt","r");
+                if (fp1==NULL){
+                    printf("Dosya acilamadi.");
+                    exit(1);
+                }
+
+                do {
+                  c = fgets(word,100,fp1);
+                  if (c != NULL)
+                  printf("%s",word);
+                } while (c != NULL);
+                fclose(fp1);
+            }else
+                printf("Y ve I komutlari daha once calistirilmamistir.\n");
+        }
+
+        if(!strcmp(komut,"C")){
+            printf("Cikis yapildi.");
+            break;
+        }
+
+    }while (1);
+
+   return 0;
+}
