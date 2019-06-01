@@ -1,0 +1,353 @@
+#include <LiquidCrystal.h>
+const int ledPin =  GREEN_LED;
+const int ledPin2 =  RED_LED;
+
+LiquidCrystal lcd(PD_1,PD_2,PD_3,PE_1,PE_2,PE_3); // LCD Pin
+byte buttonPin[11] = {PB_6, PA_3, PB_3, PC_4, PC_5, PC_6, PC_7, PD_6, PD_7, PF_4, PB_2}; // Button Pin
+
+char cumleler[6][100];
+
+struct Urunler{
+    int ID;
+    char Isim[10];
+    int Stok;
+    char Fiyat[10];
+}Urun[5];
+
+int kasa[3]; // kasa[0] = 25kr, kasa[1] = 50kr, kasa[2] = 1tl
+int paraustu[3]={0}; // paraustu[0] = 25kr, paraustu[1] = 50kr, paraustu[2] = 1tl
+
+int alinan[5]={0}; // Alinacak urunler tutuluyor.
+int rastgele=3; // 1+rand()%4;
+int buttonState[11] = { 0 }; 
+float bakiye=0,eskibakiye=0;
+int eskistok[5] = { 0 };
+int i=0;
+
+void stringParcalama(){
+    char urunler[]="20,20,10-1,su,30,50 Kurus-2,cay,20,1 TL-3,kahve,15,1.5 TL-4,cikolata,50,1.75 TL-5,biskuvi,100,2 TL";
+    char* token = strtok(urunler, "-");
+    int i=0,j=0,k=0;
+    while (token != NULL){
+        strcpy(cumleler[i],token);
+        i++;
+        token = strtok(NULL, "-");
+    }
+
+    char* token2 = strtok(cumleler[0], ",");
+    while (token2 != NULL){
+        if(j==0){
+            kasa[j]=atoi(token2);
+        }else if(j==1){
+            kasa[j]=atoi(token2);
+        }else if(j==2){
+            kasa[j]=atoi(token2);
+        }
+        j++;
+        token2 = strtok(NULL, ",");
+    }
+
+    for(i=1;i<6;i++){
+        char* token2 = strtok(cumleler[i], ",");
+        while (token2 != NULL){
+            if(k==0){
+                Urun[i-1].ID=atoi(token2);
+            }else if(k==1){
+                strcpy(Urun[i-1].Isim,token2);
+            }else if(k==2){
+                Urun[i-1].Stok=atoi(token2);
+            }else if(k==3){
+                strcpy(Urun[i-1].Fiyat,token2);
+            }
+            k++;
+            token2 = strtok(NULL, ",");
+        }
+        k=0;
+    }
+}
+
+void setup() {
+  stringParcalama();
+  lcd.begin(16, 2);
+  lcd.setCursor(3,0);
+  lcd.print("YAZAR KASA"); 
+  lcd.setCursor(2,1);
+  lcd.print("MODELLENMESI"); 
+  pinMode(ledPin, OUTPUT);
+  pinMode(ledPin2, OUTPUT);      
+  for(i=0; i<11; i++){
+    pinMode(buttonPin[i], INPUT_PULLUP);
+  }  
+}
+
+void loop(){
+  digitalWrite(ledPin, LOW);
+  digitalWrite(ledPin2, LOW);
+  
+  for(i=0;i<11;i++)
+    buttonState[i] = digitalRead(buttonPin[i]); 
+  
+  if(buttonState[0] == LOW) {     
+    bakiye+=0.25;
+    delay(250);
+    lcd.begin(16, 2);
+    lcd.print("25 Kr attiniz."); 
+    lcd.setCursor(0,1);
+    lcd.print(bakiye); 
+  }
+
+  if(buttonState[1] == LOW) {     
+    bakiye+=0.5;
+    delay(250);
+    lcd.begin(16, 2);
+    lcd.print("50 Kr attiniz."); 
+    lcd.setCursor(0,1);
+    lcd.print(bakiye); 
+  }
+
+  if(buttonState[2] == LOW) {     
+    bakiye+=1;
+    delay(250);
+    lcd.begin(16, 2);
+    lcd.print("1 TL attiniz."); 
+    lcd.setCursor(0,1);
+    lcd.print(bakiye); 
+  }
+
+  if(buttonState[3] == LOW) {     
+    lcd.begin(16, 2);
+    lcd.print("Bakiye:"); 
+    lcd.setCursor(7,0);
+    lcd.print(bakiye);
+    lcd.setCursor(0,1);
+    lcd.print("Urun Seciniz:"); 
+    eskibakiye=bakiye;
+    for(i=0;i<5;i++){
+      eskistok[i]=Urun[i].Stok;
+    }
+  }
+
+  if(buttonState[4] == LOW) {
+      if(Urun[0].Stok>0){
+        alinan[0]++;     
+        bakiye-=0.5;
+        Urun[0].Stok--;
+        delay(250);
+        lcd.begin(16, 2);
+        lcd.print("Su Alindi."); 
+        lcd.setCursor(0,1);
+        lcd.print("S:");
+        lcd.setCursor(2,1);
+        lcd.print(Urun[0].Stok);
+        lcd.setCursor(6,1);
+        lcd.print("B:");
+        lcd.setCursor(8,1);
+        lcd.print(bakiye);   
+      }else{
+        lcd.begin(16, 2);
+        lcd.print("STOK TUKENDI"); 
+        lcd.setCursor(0,1);
+        lcd.print("S:");
+        lcd.setCursor(2,1);
+        lcd.print(Urun[0].Stok);
+        lcd.setCursor(6,1);
+        lcd.print("B:");
+        lcd.setCursor(8,1);
+        lcd.print(bakiye);     
+      }  
+  }
+
+  if(buttonState[5] == LOW) {
+      if(Urun[1].Stok>0){
+        alinan[1]++;      
+        bakiye-=1;
+        Urun[1].Stok--;
+        delay(250);
+        lcd.begin(16, 2);
+        lcd.print("Cay Alindi."); 
+        lcd.setCursor(0,1);
+        lcd.print("S:");
+        lcd.setCursor(2,1);
+        lcd.print(Urun[1].Stok);
+        lcd.setCursor(6,1);
+        lcd.print("B:");
+        lcd.setCursor(8,1);
+        lcd.print(bakiye);   
+      }else{
+        lcd.begin(16, 2);
+        lcd.print("STOK TUKENDI"); 
+        lcd.setCursor(0,1);
+        lcd.print("S:");
+        lcd.setCursor(2,1);
+        lcd.print(Urun[1].Stok);
+        lcd.setCursor(6,1);
+        lcd.print("B:");
+        lcd.setCursor(8,1);
+        lcd.print(bakiye);   
+      }  
+  }
+
+  if(buttonState[6] == LOW) {     
+      if(Urun[2].Stok>0){
+        alinan[2]++;      
+        bakiye-=1.5;
+        Urun[2].Stok--;
+        delay(250);
+        lcd.begin(16, 2);
+        lcd.print("Kahve Alindi."); 
+        lcd.setCursor(0,1);
+        lcd.print("S:");
+        lcd.setCursor(2,1);
+        lcd.print(Urun[2].Stok);
+        lcd.setCursor(6,1);
+        lcd.print("B:");
+        lcd.setCursor(8,1);
+        lcd.print(bakiye);   
+      }else{
+        lcd.begin(16, 2);
+        lcd.print("STOK TUKENDI"); 
+        lcd.setCursor(0,1);
+        lcd.print("S:");
+        lcd.setCursor(2,1);
+        lcd.print(Urun[2].Stok);
+        lcd.setCursor(6,1);
+        lcd.print("B:");
+        lcd.setCursor(8,1);
+        lcd.print(bakiye);   
+      }
+  }
+
+  if(buttonState[7] == LOW) {
+      if(Urun[3].Stok>0){
+        alinan[3]++;      
+        bakiye-=1.75;
+        Urun[3].Stok--;
+        delay(250);
+        lcd.begin(16, 2);
+        lcd.print("Cikolata Alindi."); 
+        lcd.setCursor(0,1);
+        lcd.print("S:");
+        lcd.setCursor(2,1);
+        lcd.print(Urun[3].Stok);
+        lcd.setCursor(6,1);
+        lcd.print("B:");
+        lcd.setCursor(8,1);
+        lcd.print(bakiye);   
+      }else{
+        lcd.begin(16, 2);
+        lcd.print("STOK TUKENDI"); 
+        lcd.setCursor(0,1);
+        lcd.print("S:");
+        lcd.setCursor(2,1);
+        lcd.print(Urun[3].Stok);
+        lcd.setCursor(6,1);
+        lcd.print("B:");
+        lcd.setCursor(8,1);
+        lcd.print(bakiye);   
+      }    
+  }
+
+  if(buttonState[8] == LOW) {     
+      if(Urun[4].Stok>0){
+        alinan[4]++;      
+        bakiye-=2;
+        Urun[4].Stok--;
+        delay(250);
+        lcd.begin(16, 2);
+        lcd.print("Biskuvi Alindi."); 
+        lcd.setCursor(0,1);
+        lcd.print("S:");
+        lcd.setCursor(2,1);
+        lcd.print(Urun[4].Stok);
+        lcd.setCursor(6,1);
+        lcd.print("B:");
+        lcd.setCursor(8,1);
+        lcd.print(bakiye);   
+      }else{
+        lcd.begin(16, 2);
+        lcd.print("STOK TUKENDI"); 
+        lcd.setCursor(0,1);
+        lcd.print("S:");
+        lcd.setCursor(2,1);
+        lcd.print(Urun[4].Stok);
+        lcd.setCursor(6,1);
+        lcd.print("B:");
+        lcd.setCursor(8,1);
+        lcd.print(bakiye);   
+      }
+  }
+
+  if(buttonState[9] == LOW) {
+    if(rastgele==2){  
+      for(i=0;i<5;i++){
+        Urun[i].Stok=eskistok[i];
+      }
+      bakiye=0;
+      lcd.begin(16, 2);
+      lcd.print("PARA SIKISTI");
+      lcd.setCursor(0,1);
+      lcd.print("Iade OK. B:"); 
+      lcd.setCursor(11,1);
+      lcd.print(bakiye);
+      digitalWrite(ledPin2, HIGH);
+      delay(2500);
+    }else{
+      paraustu[2] = bakiye/1;
+      if(paraustu[2]>kasa[2]){
+          bakiye -=1*kasa[2];
+          paraustu[2]=kasa[2];
+      }else{
+          bakiye -= 1*paraustu[2];
+      }
+
+      paraustu[1] = bakiye/0.5;
+      if(paraustu[1]>kasa[1]){
+          bakiye -= 0.5*kasa[1];
+          paraustu[1]=kasa[1];
+      }else{
+          bakiye -= 0.5*paraustu[1];  
+      }
+
+      paraustu[0] = bakiye/0.25;
+      if(paraustu[0]>kasa[0]){
+          bakiye -= 0.25*kasa[0];
+          paraustu[0]=kasa[0];
+      }else{
+          bakiye -= 0.25*paraustu[0]; 
+      }
+
+      lcd.begin(16, 2);
+      lcd.print("B:");
+      lcd.setCursor(2,0);
+      lcd.print(bakiye);
+      lcd.setCursor(8,0);
+      lcd.print(paraustu[0]);
+      lcd.setCursor(11,0);
+      lcd.print(paraustu[1]);
+      lcd.setCursor(14,0);
+      lcd.print(paraustu[2]);
+      lcd.setCursor(0,1);
+      if(bakiye==0){
+        lcd.print("Bakiye Yoktur.");
+      }else{
+        lcd.print("Yeterli Para Yoktur.");
+      }
+      digitalWrite(ledPin, HIGH);
+      delay(2500);
+    }
+  }
+
+
+  if(buttonState[10] == LOW) {     
+    for(i=0;i<5;i++){
+      Urun[i].Stok=eskistok[i];
+    }
+    bakiye=eskibakiye;
+    lcd.begin(16, 2);
+    lcd.print("SECIM RESETLENDI");
+    lcd.setCursor(0,1);
+    lcd.print("Bakiye:"); 
+    lcd.setCursor(7,1);
+    lcd.print(bakiye); 
+  }
+}
