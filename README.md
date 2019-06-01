@@ -3,11 +3,11 @@ Programlama Laboratuvarı dersinde geliştirdiğim projeler yer almakta.
 
 ## Projeler
 
-- **1. Proje:** Bir kavşak üzerindeki belirlenen caddeler üzerindeki araç sayılarının girilmesiyle elde edilen veriler matris'e atanıp Gauss Elimination yönteminin algoritmasını geliştirip diğer caddeler üzerindeki araç sayısını öğrenebilmekte. Basit C++ ile geliştirilmiştir. Lineer Cebir dersinde öğrenilen bilgiler yardımıyla geliştirilmiştir.
+- **1. Proje:** Bir kavşak üzerindeki belirlenen caddeler üzerindeki araç sayılarının girilmesiyle elde edilen veriler matris'e atanıp Gauss Elimination yönteminin algoritmasını geliştirip diğer caddeler üzerindeki araç sayısını öğrenebilmekteyi sağlamaktadır. Basit C++ ile geliştirilmiştir. Lineer Cebir dersinde öğrenilen bilgiler yardımıyla geliştirilmiştir.
 
 - **2. Proje:** Bir dosya içerisinde yer alan lojik devrenin programda tasarlanması, verilerin değiştirilmesi, simulasyonun yapılarak her şeyin komut ekrarnında gösterilmesinin ardından mevcut veriler tekrardan dosya sistemine aktarılması. C ile geliştirilmiştir. Mantıksal Tasarım dersinde öğrenilen bilgiler yardımıyla geliştirilmiştir.
 
-- **3. Proje:** Bir robot hiyerarşisinin Classlar üzerinde Encapsulation, Inheritance, Polymorphism, Abstraction faydalanılarak uygulamasının geliştirilmesi. Java ile geliştirilmiştir. Nesneye Yönelik Programlama dersinde öğrenilen bilgiler yardımıyla geliştirilmiştir.
+- **3. Proje:** Bir robot hiyerarşisinin Classlar üzerinde Encapsulation, Inheritance, Polymorphism, Abstraction faydalanılarak uygulamasının geliştirilmesi sağlanmıştır. Java ile geliştirilmiştir. Nesneye Yönelik Programlama dersinde öğrenilen bilgiler yardımıyla geliştirilmiştir.
 
 - **4. Proje:** 8 bin satırlık rezervasyon sistemine ait bir dosya içerisindeki verilerin parse edilip yaklaşık 80 bin verinin tree üzerine aktarılması, tree üzerinde silme ve ekleme işlemlerinin gerçekleştirilmesi, tree üzerinde arama yapılması gibi oldukça geniş bir projedir. Veri Yapıları dersinde öğrenilen bilgiler yardımıyla geliştirilmiştir.
 
